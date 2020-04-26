@@ -3,24 +3,27 @@
         <div class="login_box">
             <!-- 头像区域 -->
             <div class="avatar_box">
-                <img src="../assets/logo.png" alt="">
+                <img src="../assets/iu.jpg" alt="">
             </div>
             <!-- 登录表单区域 -->
-            <el-form  ref="loginFormRef" :model="loginForm" :rules="loginFormRules" class="login_form">
-                <!-- 用户名 -->
-                <el-form-item prop="username">
-                    <el-input v-model="loginForm.username" prefix-icon="iconfont icon-touxiang" ></el-input>
-                </el-form-item>
-                <!-- 密码 -->
-                <el-form-item prop="password">
-                    <el-input  v-model="loginForm.password" prefix-icon="iconfont icon-ai-eye" type="password"></el-input>
-                </el-form-item>
-                <!-- 按钮区域 -->
-                <el-form-item class="btns">
-                    <el-button type="primary" @click="submitForm">登录</el-button>
-                    <el-button type="info" @click="resetForm">重置</el-button>
-                </el-form-item>
-            </el-form>
+            <div class="login_form">
+                <!-- 通过 ref 标注 DOM 元素  在 DOM 元素上通过 ref 属性标注，属性名称自定义 -->
+                <el-form  ref="loginFormRef" :model="loginForm" :rules="loginFormRules" >
+                    <!-- 用户名 -->
+                    <el-form-item prop="username">
+                        <el-input v-model="loginForm.username" prefix-icon="iconfont icon-touxiang" ></el-input>
+                    </el-form-item>
+                    <!-- 密码 -->
+                    <el-form-item prop="password">
+                        <el-input  v-model="loginForm.password" prefix-icon="iconfont icon-ai-eye" type="password"></el-input>
+                    </el-form-item>
+                    <!-- 按钮区域 -->
+                    <el-form-item class="btns">
+                        <el-button type="primary" @click="submitForm">登录</el-button>
+                        <el-button type="info" @click="resetForm">重置</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
         </div>
     </div>
 </template>
@@ -48,6 +51,7 @@
      methods: {
       //登录
       submitForm() {
+        //通过 $refs 获取 DOM 元素 
         //使用ES7 中  async await 方式发送异步请求 async关键字放在函数之前 await用于接收结果（将promise对象转换为普通对象）
         this.$refs.loginFormRef.validate(async valid => {
           if (!valid) return;
@@ -70,6 +74,7 @@
       },
       //点击重置表单
       resetForm() {
+          //通过 $refs 获取 DOM 元素 
           this.$refs.loginFormRef.resetFields();
       }
     }
