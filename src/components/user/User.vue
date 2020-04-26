@@ -20,7 +20,7 @@
 
             <!-- 用户信息列表 -->
              <el-table :data="userList" border stripe>
-                 <el-table-column type="index" label="#"></el-table-column>
+                <el-table-column type="index" label="#"></el-table-column>
                 <el-table-column prop="username" label="姓名"></el-table-column>
                 <el-table-column prop="email" label="邮箱" ></el-table-column>
                 <el-table-column prop="mobile" label="电话"></el-table-column>
@@ -40,7 +40,7 @@
                         <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteUser(scope.row.id)"></el-button>
                         <!-- 分配角色按钮 -->
                         <el-tooltip  effect="dark" content="分配角色" placement="top" :enterable="false">
-                          <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+                          <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRoles(scope.row)"></el-button>
                         </el-tooltip>
                     </template>
                 </el-table-column>
@@ -91,6 +91,24 @@
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="editUser(editForm.id)">确 定</el-button>
+            </span>
+        </el-dialog>
+        <!-- 分配角色的对话框 -->
+        <el-dialog title="分配角色"  :visible.sync="setRolesDialogVisible" width="50%" @close="setRoledialogClose">
+            <!-- 内容主体区域 -->
+            <el-form  label-width="100px">
+                <p>当前用户：{{userInfo.username}}</p>
+                <p>当前角色：{{userInfo.role_name}}</p>
+                <p>分配新角色：
+                    <el-select v-model="selectedRoleId" placeholder="请选择角色" >
+                        <el-option  v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.id"></el-option>
+                    </el-select>
+                </p>
+            </el-form>
+            <!-- 底部区域 -->
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="setRolesDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="confirmSetRoles(userInfo.id)">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -167,6 +185,14 @@ export default{
                 mobile:'',
                 id:''
             },
+            //分配角色的对话框是否显示
+            setRolesDialogVisible:false,
+            //需要分配角色的用户信息
+            userInfo:'',
+            //所有角色的数据列表
+            roleList:[],
+            //已选中的角色id值
+            selectedRoleId:'',
             
         }
     },
@@ -238,7 +264,6 @@ export default{
         //点击修改用户显示弹窗并获取对应数据
         async showEditDialog(id){
             this.editDialogVisible = true;
-           var userId=id;
             const result = await this.$http.get(`users/${id}`);
             const res = result.data;
             if(res.meta.status!== 200) {
@@ -293,8 +318,33 @@ export default{
                 message: '已取消删除'
             });          
             });
-      }
-        
+        },
+        //分配角色
+        async setRoles(userInfo){
+            this.userInfo=userInfo;
+            //获取所有角色列表
+            const result = await this.$http.get('roles');
+            const res = result.data;
+            this.roleList=res.data;
+            this.setRolesDialogVisible=true;
+        },
+        //确认分配角色
+        async confirmSetRoles(id){
+            if(!this.selectedRoleId){
+                return this.$message.error('请选择角色！')
+            }
+            const result = await this.$http.put(`users/${id}/role`,{rid:this.selectedRoleId});
+            const res = result.data;
+            if(res.meta.status!==200){
+                 return this.$message.error(res.meta.msg)
+            }
+            this.getUserList();
+            this.setRolesDialogVisible=false;
+        },
+        //监听分配角色对话框的关闭事件  表单清空
+        setRoledialogClose(){
+            this.selectedRoleId='';
+        }
         
     }
 }
