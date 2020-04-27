@@ -296,13 +296,13 @@ export default {
             const rightsId=this.$refs.treeRef.getCheckedKeys();
             const result = await this.$http.post(`roles/${this.roleId}/rights`,{rids:rightsId.join(",")});
             const res = result.data;
-            console.log(res)
             if(res.meta.status!==200) {
                 return this.$message.error(res.meta.msg)
             }else{
-                this.getRolesList()
+                this.getRolesList();
+                this.setRightsdialogVisible = false;
             }
-            this.setRightsdialogVisible = false;
+            
         } 
     }
 }
