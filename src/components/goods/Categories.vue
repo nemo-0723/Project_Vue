@@ -45,7 +45,7 @@
                 <el-form-item label="父级分类:" >
                     <!-- options用来指定数据源 -->
                     <!-- cascaderProps用来指定配置对象 -->
-                    <el-cascader  :options="parentCateList"  :props="cascaderProps" v-model="value" clearable @change="parentCateChange"></el-cascader>
+                    <el-cascader  :options="parentCateList"  :props="cascaderProps" v-model="seletedValue" clearable  @change="parentCateChange"></el-cascader>
                 </el-form-item>
                 
             </el-form>
@@ -106,13 +106,13 @@ export default {
             parentCateList:[],
             //父级分类的数据列表中用来指定配置对象
             cascaderProps:{
-                value: 'cat_id ',
-                label: 'cat_name',
-                children: 'children',
-                expandTrigger: 'hover'
+                value:'cat_id',
+                label:'cat_name',
+                children:'children',
+                expandTrigger:'hover'
             },
             //选中的父级分类的id数组
-            value:[]
+            seletedValue:[]
         }
     },
     created(){
@@ -142,13 +142,11 @@ export default {
             const result = await this.$http.get('categories',{params:{type:2}});
             const res = result.data;
             if(res.meta.status!==200)  return this.$message.error(res.meta.msg);
-            this.parentCateList = res.data
-            console.log(this.parentCateList)
-            
+            this.parentCateList = res.data 
         },
         //选择项发生变化触发这个事件
-        parentCateChange(value){
-            console.log(this.value)
+        parentCateChange(){
+            console.log(this.seletedValue)
 
         },
         //删除该分类
