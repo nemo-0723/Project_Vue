@@ -200,7 +200,7 @@ export default {
             this.onlyTableData=res.data;
             //每一个参数下的可选项 tag 
             res.data.forEach(item=>{
-                item.attr_vals=item.attr_vals?item.attr_vals.split(','):[];
+                item.attr_vals=item.attr_vals?item.attr_vals.split(' '):[];
                 this.attr_vals=item.attr_vals
             });
             
@@ -285,7 +285,7 @@ export default {
             let inputValue = this.inputValue;
             if (inputValue) {
                this.attr_vals.push(inputValue);
-               const result=await this.$http.put(`categories/${this.cateId}/attributes/${row.attr_id}`,{attr_name:row.attr_name,attr_sel:row.attr_sel,attr_vals:row.attr_vals.join(',')});
+               const result=await this.$http.put(`categories/${this.cateId}/attributes/${row.attr_id}`,{attr_name:row.attr_name,attr_sel:row.attr_sel,attr_vals:row.attr_vals.join(' ')});
                const res = result.data;
                this.getParamsData()
             }
